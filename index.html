@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>小说记忆工作台</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="rail">
+        <div class="brand">
+          <div class="brand-mark">N</div>
+          <div>
+            <strong>小说记忆工作台</strong>
+            <span id="saveStatus">已保存</span>
+          </div>
+        </div>
+
+        <section class="panel project-panel">
+          <div class="panel-title">
+            <h2>作品</h2>
+            <button id="renameProjectBtn" class="icon-btn" title="重命名作品">✎</button>
+          </div>
+          <input id="projectTitle" class="title-input" type="text" />
+        </section>
+
+        <section class="panel chapter-panel">
+          <div class="panel-title">
+            <h2>章节</h2>
+            <button id="addChapterBtn" class="icon-btn" title="新建章节">＋</button>
+          </div>
+          <input id="globalSearch" class="search-input" type="search" placeholder="搜索正文、人物、设定" />
+          <div id="chapterList" class="chapter-list"></div>
+          <div id="searchResults" class="search-results"></div>
+        </section>
+
+        <section class="panel export-panel">
+          <button id="exportTxtBtn" class="full-btn">导出 TXT</button>
+          <button id="exportMdBtn" class="full-btn secondary">导出 MD</button>
+        </section>
+      </aside>
+
+      <main class="writer">
+        <header class="topbar">
+          <div class="chapter-heading">
+            <input id="chapterTitle" class="chapter-title" type="text" />
+            <textarea id="chapterSummary" class="chapter-summary" rows="2" placeholder="本章摘要：关键事件、人物变化、伏笔、不能忘的细节"></textarea>
+            <div class="chapter-tools">
+              <select id="chapterStatus" title="章节状态">
+                <option value="draft">草稿</option>
+                <option value="revising">修订</option>
+                <option value="done">完成</option>
+              </select>
+              <label class="target-control">
+                <span>目标</span>
+                <input id="chapterTarget" type="number" min="0" step="100" placeholder="0" />
+              </label>
+              <button id="focusModeBtn" class="secondary-btn" type="button">专注</button>
+            </div>
+          </div>
+          <div class="stats">
+            <span id="wordCount">0 字</span>
+            <span id="progressCount"></span>
+            <span id="memoryCount">0 条记忆</span>
+            <span id="searchCount"></span>
+          </div>
+        </header>
+
+        <textarea id="editor" class="editor" spellcheck="false"></textarea>
+      </main>
+
+      <aside class="memory">
+        <div class="tabs">
+          <button class="tab active" data-tab="assistant">AI</button>
+          <button class="tab" data-tab="characters">人物</button>
+          <button class="tab" data-tab="outline">大纲</button>
+          <button class="tab" data-tab="world">世界观</button>
+          <button class="tab" data-tab="memory">记忆</button>
+          <button class="tab" data-tab="snapshots">快照</button>
+          <button class="tab" data-tab="settings">设置</button>
+        </div>
+
+        <section id="assistantTab" class="tab-page active">
+          <div class="section-head">
+            <h2>AI 助手</h2>
+            <button id="copyContextBtn" class="ghost-btn">复制上下文</button>
+          </div>
+          <label>
+            任务
+            <select id="aiTask">
+              <option value="continue">续写当前章节</option>
+              <option value="polish">润色选中内容</option>
+              <option value="expand">扩写当前片段</option>
+              <option value="check">检查设定矛盾</option>
+              <option value="outline">生成后续大纲</option>
+              <option value="memory_extract">提取长期记忆</option>
+            </select>
+          </label>
+          <label>
+            字数
+            <input id="aiWords" type="number" min="100" max="5000" step="100" value="800" />
+          </label>
+          <label>
+            风格要求
+            <input id="aiStyle" type="text" value="克制、有画面感、保持人物一致" />
+          </label>
+          <label>
+            额外要求
+            <textarea id="aiExtra" rows="4" placeholder="例如：不要提前揭露真相；保持第一人称。"></textarea>
+          </label>
+          <div class="button-row">
+            <button id="runAiBtn" class="primary-btn">生成</button>
+            <button id="insertAiBtn" class="secondary-btn">插入</button>
+          </div>
+          <div class="button-row">
+            <button id="saveAiMemoryBtn" class="secondary-btn">保存为记忆</button>
+            <button id="clearAiBtn" class="secondary-btn">清空结果</button>
+          </div>
+          <textarea id="aiOutput" class="ai-output" placeholder="AI 结果会出现在这里"></textarea>
+        </section>
+
+        <section id="charactersTab" class="tab-page">
+          <div class="section-head">
+            <h2>人物卡</h2>
+            <button id="addCharacterBtn" class="icon-btn" title="添加人物">＋</button>
+          </div>
+          <div id="characterList" class="item-list"></div>
+        </section>
+
+        <section id="outlineTab" class="tab-page">
+          <div class="section-head">
+            <h2>大纲</h2>
+            <button id="addOutlineBtn" class="icon-btn" title="添加大纲">＋</button>
+          </div>
+          <div id="outlineList" class="item-list"></div>
+        </section>
+
+        <section id="worldTab" class="tab-page">
+          <div class="section-head">
+            <h2>世界观</h2>
+            <button id="addWorldBtn" class="icon-btn" title="添加设定">＋</button>
+          </div>
+          <div id="worldList" class="item-list"></div>
+        </section>
+
+        <section id="memoryTab" class="tab-page">
+          <div class="section-head">
+            <h2>长期记忆</h2>
+            <div class="section-actions">
+              <button id="extractMemoryBtn" class="ghost-btn">从本章提取</button>
+              <button id="addMemoryBtn" class="icon-btn" title="添加记忆">＋</button>
+            </div>
+          </div>
+          <div id="memoryList" class="item-list"></div>
+        </section>
+
+        <section id="snapshotsTab" class="tab-page">
+          <div class="section-head">
+            <h2>章节快照</h2>
+            <button id="saveSnapshotBtn" class="ghost-btn">保存快照</button>
+          </div>
+          <div class="snapshot-help">快照只保存在本地浏览器，用来回退当前章节的正文和摘要。</div>
+          <div id="snapshotList" class="item-list"></div>
+        </section>
+
+        <section id="settingsTab" class="tab-page">
+          <div class="section-head">
+            <h2>API 设置</h2>
+            <button id="testApiBtn" class="ghost-btn">测试</button>
+          </div>
+          <div class="privacy-box">
+            <strong>本地优先</strong>
+            <p>作品、章节、设定和记忆默认只保存在当前浏览器本地。没有内置服务器，也不会上传到我们这里。</p>
+          </div>
+          <label>
+            接入预设
+            <div class="inline-control">
+              <select id="apiPreset">
+                <option value="custom">自定义 OpenAI 兼容接口</option>
+                <option value="ollama">Ollama 本地模型</option>
+                <option value="lmstudio">LM Studio 本地模型</option>
+                <option value="openrouter">OpenRouter</option>
+                <option value="groq">Groq</option>
+                <option value="deepseek">DeepSeek</option>
+              </select>
+              <button id="applyPresetBtn" class="secondary-btn" type="button">应用</button>
+            </div>
+            <p id="apiPresetNote" class="field-note"></p>
+          </label>
+          <label>
+            接口地址
+            <input id="apiBaseUrl" type="url" placeholder="https://api.openai.com/v1" />
+          </label>
+          <label>
+            API Key
+            <input id="apiKey" type="password" placeholder="sk-..." />
+          </label>
+          <label>
+            模型名称
+            <input id="apiModel" type="text" list="modelHints" placeholder="gpt-4.1 / deepseek-chat / qwen-plus" />
+            <datalist id="modelHints"></datalist>
+          </label>
+          <label>
+            温度
+            <input id="apiTemperature" type="number" min="0" max="2" step="0.1" value="0.8" />
+          </label>
+          <label>
+            最大输出
+            <input id="apiMaxTokens" type="number" min="200" max="8000" step="100" value="2000" />
+          </label>
+          <details class="advanced-settings">
+            <summary>高级接口设置</summary>
+            <label>
+              请求路径
+              <input id="apiEndpointPath" type="text" placeholder="/chat/completions" />
+            </label>
+            <div class="two-col">
+              <label>
+                鉴权 Header
+                <input id="apiAuthHeader" type="text" placeholder="Authorization" />
+              </label>
+              <label>
+                Key 前缀
+                <input id="apiAuthPrefix" type="text" placeholder="Bearer" />
+              </label>
+            </div>
+            <label>
+              额外 Headers JSON
+              <textarea id="apiExtraHeaders" rows="4" placeholder='例如：{"HTTP-Referer":"https://your-site.example","X-Title":"Novel Studio"}'></textarea>
+            </label>
+            <p class="field-note">请求路径留空时，会把“接口地址”当作完整请求地址。额外 Headers 必须是 JSON 对象。</p>
+          </details>
+          <label class="check-label">
+            <input id="apiSendConsent" type="checkbox" />
+            <span>我知道点击“生成”会把当前上下文发送给我自己配置的 API 服务商。</span>
+          </label>
+          <button id="saveSettingsBtn" class="primary-btn">保存设置</button>
+          <div class="local-tools">
+            <button id="exportBackupBtn" class="secondary-btn">导出本地备份</button>
+            <label class="file-btn">
+              导入备份
+              <input id="importBackupInput" type="file" accept="application/json,.json" />
+            </label>
+            <button id="clearApiKeyBtn" class="secondary-btn">清除 API Key</button>
+          </div>
+          <p id="settingsNote" class="note"></p>
+        </section>
+      </aside>
+    </div>
+
+    <template id="itemTemplate">
+      <article class="memory-card">
+        <div class="card-toolbar">
+          <input class="card-title" type="text" />
+          <button class="delete-btn" title="删除">×</button>
+        </div>
+        <textarea class="card-body" rows="5"></textarea>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
