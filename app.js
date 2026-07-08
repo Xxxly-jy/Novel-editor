@@ -155,12 +155,14 @@ function bindElements() {
     "addChapterBtn",
     "renameProjectBtn",
     "chapterTitle",
+    "workspaceChapterName",
     "chapterSummary",
     "chapterStatus",
     "chapterTarget",
     "focusModeBtn",
     "editor",
     "wordCount",
+    "footerWordCount",
     "progressCount",
     "memoryCount",
     "searchCount",
@@ -592,6 +594,8 @@ function updateStats() {
   const words = countCjkWords(chapter?.content || "");
   const target = Number(chapter?.target || 0);
   els.wordCount.textContent = `${words} 字`;
+  els.footerWordCount.textContent = `字数：${words} 字`;
+  els.workspaceChapterName.textContent = chapter?.title || "未命名章节";
   els.progressCount.textContent = target ? `目标 ${target} · ${Math.min(100, Math.round((words / target) * 100))}%` : "";
   els.memoryCount.textContent = `${totalMemory} 条记忆`;
 }

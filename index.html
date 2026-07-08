@@ -12,10 +12,17 @@
         <div class="brand">
           <div class="brand-mark">N</div>
           <div>
-            <strong>小说记忆工作台</strong>
+            <strong>小说编辑器 <span class="pro-badge">Pro</span></strong>
             <span id="saveStatus">已保存</span>
           </div>
         </div>
+
+        <nav class="workspace-nav" aria-label="工作区导航">
+          <button class="nav-item active" type="button">工作台</button>
+          <button class="nav-item" type="button">我的作品</button>
+          <button class="nav-item" type="button">最近编辑</button>
+          <button class="nav-item" type="button">回收站</button>
+        </nav>
 
         <section class="panel project-panel">
           <div class="panel-title">
@@ -42,6 +49,18 @@
       </aside>
 
       <main class="writer">
+        <div class="workspace-bar">
+          <div class="workspace-title">
+            <span class="chapter-kicker">正在编辑</span>
+            <strong id="workspaceChapterName">第一章</strong>
+          </div>
+          <div class="workspace-actions">
+            <span class="sync-dot">自动保存中</span>
+            <button class="icon-action" type="button" title="主题">☼</button>
+            <button class="icon-action" type="button" title="通知">♢</button>
+            <button class="publish-btn" type="button">发布</button>
+          </div>
+        </div>
         <header class="topbar">
           <div class="chapter-heading">
             <input id="chapterTitle" class="chapter-title" type="text" />
@@ -67,7 +86,33 @@
           </div>
         </header>
 
+        <div class="format-toolbar" aria-label="编辑工具栏">
+          <select aria-label="段落样式">
+            <option>正文</option>
+            <option>标题</option>
+            <option>引用</option>
+          </select>
+          <select aria-label="字号">
+            <option>16</option>
+            <option>18</option>
+            <option>20</option>
+          </select>
+          <button type="button" title="加粗">B</button>
+          <button type="button" title="斜体">I</button>
+          <button type="button" title="下划线">U</button>
+          <button type="button" title="删除线">S</button>
+          <button type="button" title="对齐">≡</button>
+          <button type="button" title="列表">☷</button>
+          <button type="button" title="引用">❝</button>
+          <button type="button" title="插入">＋</button>
+        </div>
+
         <textarea id="editor" class="editor" spellcheck="false"></textarea>
+        <div class="editor-statusbar">
+          <span id="footerWordCount">字数：0 字</span>
+          <span>预计阅读：约 0 分钟</span>
+          <span>自动保存中</span>
+        </div>
       </main>
 
       <aside class="memory">
